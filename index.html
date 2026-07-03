@@ -197,17 +197,44 @@ quizData.forEach((q, i) => q.answer = answers[i]);
         });
     }
 
-    // Hàm thực thi khi bấm nộp bài (Do không có đáp án nên chỉ báo hoàn thành)
-  function submitQuiz() {
-    let score = 0;
-    quizData.forEach((q, index) => {
-        const selected = document.querySelector(`input[name="question${index}"]:checked`);
-        if (selected && parseInt(selected.value) === q.answer) {
-            score++;
-        }
-    });
-    resultElement.innerText = `Bạn đã trả lời đúng ${score} / ${quizData.length} câu!`;
-}
+    // Hàm tính điểm và hiển thị câu đúng/sai
+    function submitQuiz() {
+        let score = 0;
+        
+        quizData.forEach((q, index) => {
+            // Lấy danh sách tất cả thẻ input (A, B, C, D) của câu hỏi hiện tại
+            const options = document.querySelectorAll(`input[name="question${index}"]`);
+            
+            options.forEach((radio, optIndex) => {
+                // label chính là thẻ bao bọc chứa đoạn text đáp án
+                const label = radio.parentElement;
+                
+                // Trả lại màu mặc định (để tránh lỗi nếu người dùng bấm nộp bài nhiều lần)
+                label.style.color = '#333';
+                label.style.fontWeight = 'normal';
+
+                // Nếu là đáp án đúng -> Luôn bôi màu xanh lá
+                if (optIndex === q.answer) {
+                    label.style.color = '#27ae60';
+                    label.style.fontWeight = 'bold';
+                }
+                
+                // Nếu người dùng chọn sai -> Bôi màu đỏ đáp án đó
+                if (radio.checked) {
+                    if (optIndex === q.answer) {
+                        score++; // Chọn đúng thì cộng điểm
+                    } else {
+                        label.style.color = '#e74c3c';
+                        label.style.fontWeight = 'bold';
+                        label.style.textDecoration = 'line-through'; // Gạch ngang câu sai
+                    }
+                }
+            });
+        });
+        
+        // Hiển thị tổng điểm
+        resultElement.innerText = `Bạn đã trả lời đúng ${score} / ${quizData.length} câu!`;
+    }
     // Chạy khi trang vừa tải xong
     loadQuiz();
 </script>
