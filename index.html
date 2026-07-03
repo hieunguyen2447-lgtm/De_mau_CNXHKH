@@ -169,6 +169,11 @@
             "question": "Câu 35. Phương án nào dưới đây KHÔNG đúng khi đánh giá về những biến đổi và khác biệt của giai cấp công nhân ở một số quốc gia xã hội chủ nghĩa hiện nay?",
             "options": ["A. Giai cấp công nhân có vai trò và đóng góp ngày càng ít hơn đối với sự phát triển của xã hội, không còn là giai cấp lãnh đạo cách mạng.", "B. Giai cấp công nhân ngày càng tăng nhanh về số lượng, thay đổi lớn về cơ cấu xã hội, nghề nghiệp và thu nhập trong nền sản xuất hiện đại.", "C. Đảng Cộng sản – đội tiên phong của giai cấp công nhân, giữ vai trò cầm quyền trong quá trình xây dựng chủ nghĩa xã hội.", "D. Giai cấp công nhân vẫn giữ vai trò lãnh đạo cách mạng trong tiến trình xây dựng chủ nghĩa xã hội, chủ nghĩa cộng sản."]
         }
+        // Mảng đáp án 35 câu
+const answers = [1, 2, 0, 1, 0, 1, 2, 3, 3, 1, 1, 2, 0, 0, 1, 1, 1, 3, 1, 3, 0, 2, 2, 1, 0, 0, 2, 2, 1, 0, 0, 2, 1, 0, 0];
+
+// Tự động gộp đáp án vào dữ liệu câu hỏi
+quizData.forEach((q, i) => q.answer = answers[i]);
     ];
 
     const quizElement = document.getElementById('quiz');
@@ -194,9 +199,16 @@
     }
 
     // Hàm thực thi khi bấm nộp bài (Do không có đáp án nên chỉ báo hoàn thành)
-    function submitQuiz() {
-        resultElement.innerText = `Bạn đã hoàn thành bài thi! (Phiên bản này chưa cập nhật đáp án để tính điểm)`;
-    }
+   function submitQuiz() {
+    let score = 0;
+    quizData.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="question${index}"]:checked`);
+        if (selected && parseInt(selected.value) === q.answer) {
+            score++;
+        }
+    });
+    resultElement.innerText = `Bạn đã trả lời đúng ${score} / ${quizData.length} câu!`;
+}
 
     // Chạy khi trang vừa tải xong
     loadQuiz();
